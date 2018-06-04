@@ -2,9 +2,10 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres@localhost/height_collector'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@localhost/height_collector'
 db=SQLAlchemy(app)
 
+#create inherted class from Model class of SQLAlchemy
 class Data(db.Model):
     __tablename__="data"
     id=db.Column(db.Integer, primary_key=True)
@@ -25,6 +26,10 @@ def success():
         email=request.form["email_name"]
         height=request.form["height_name"]
         print(email,height)
+        data=Data(email,height)
+        db.session.add(data)
+        db.session.commit()
+        
         return render_template("success.html")
 
 

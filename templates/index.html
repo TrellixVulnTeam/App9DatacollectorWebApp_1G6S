@@ -6,16 +6,17 @@
     <title>Data collector App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/main.css" />
-    <script src="main.js"></script>
+    <script src="../static/main.js"></script>
 </head>
     <body>
         <div class="container">
             <h1>Collecting heights</h1>
             <h3>Please fill entries to get stats on height</h3>
-            <form action="{{url_for('success')}}" method="POST">
+            <p1 id="message"></p1>
+            <form action="{{url_for('success')}}" method="POST"</form>
                 <input title="Your email will be safe with us" placeholder="Enter your email" type="email" name="email_name" required> <br>
                 <input title="Your data will be safe with us" placeholder="Your height in cm" type="number" min="50" max="300" name="height_name" required> <br>
-                <button type="submit">Submit</button>
+                <button type="submit" onclick="emailexists()">Submit</button>
             </form>
         </div>
     </body>
