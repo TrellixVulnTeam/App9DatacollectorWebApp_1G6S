@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@localhost/height_collector'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@192.168.3.2/height_collector'
 db=SQLAlchemy(app)
 
 #create inherted class from Model class of SQLAlchemy
