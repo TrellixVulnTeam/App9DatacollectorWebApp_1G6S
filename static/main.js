@@ -1,4 +1,4 @@
 function emailexists() {
-    document.getElementById("message").innerHTML="Clicked!!!!!!";
+    document.getElementById("message").innerHTML="Submitted";
 }
 
