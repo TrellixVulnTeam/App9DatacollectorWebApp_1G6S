@@ -32,7 +32,7 @@ def success():
             db.session.add(data)
             db.session.commit()
             qresult=db.session.query(Data).filter(Data.email_==email).count()
-            return render_template("success.html", qresult)
+            return render_template("success.html", qresult=qresult)
         return render_template("index.html", message="Email already exists")  #otherwise give message to user  
 
 if __name__ == '__main__'   :
