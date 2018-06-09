@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@192.168.3.2:5432/height_collector'
@@ -31,8 +32,10 @@ def success():
             data=Data(email,height)
             db.session.add(data)
             db.session.commit()
+            average_height=db.session.query(func.avg(Data.height_)).scalar()
+            average_height=round(average_height, 1)
             qresult=db.session.query(Data).filter(Data.email_==email).count()
-            return render_template("success.html", qresult=qresult)
+            return render_template("success.html", qresult=qresult, average_height=average_height)
         return render_template("index.html", message="Email already exists")  #otherwise give message to user  
 
 if __name__ == '__main__'   :
