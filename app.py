@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@localhost/height_collector'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@192.168.3.2:5432/height_collector'
+#app.config['SQLALCHEMY_DATABASE_URI']='postgres://qrfgalrkmmrblp:8df946d1e500bb5e410ff565c32c7984bf012e8b34c7a77fa527eb26f0c3c4fb@ec2-50-19-224-165.compute-1.amazonaws.com:5432/dftul29sg000a?sslmode=require'
 db=SQLAlchemy(app)
 
 #create inherted class from Model class of SQLAlchemy
@@ -20,18 +22,21 @@ class Data(db.Model):
 def index():
     return render_template("index.html")
 
-@app.route("/success", methods=['POST'])
+@app.route("/submit", methods=['POST'])
 def success():
     if request.method=='POST':
         email=request.form["email_name"]
         height=request.form["height_name"]
         print(email,height)
-        data=Data(email,height)
-        db.session.add(data)
-        db.session.commit()
-        
-        return render_template("success.html")
-
+        if db.session.query(Data).filter(Data.email_==email).count() == 0: # check if email exists on database and add
+            data=Data(email,height)
+            db.session.add(data)
+            db.session.commit()
+            average_height=db.session.query(func.avg(Data.height_)).scalar()
+            average_height=round(average_height, 1)
+            qresult=db.session.query(Data).filter(Data.email_==email).count()
+            return render_template("success.html", qresult=qresult, average_height=average_height)
+        return render_template("index.html", message="Email already exists")  #otherwise give message to user  
 
 if __name__ == '__main__'   :
     app.debug=True
