@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+from werkzeug import secure_filename
 
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123456@192.168.3.2:5432/height_collector'
@@ -36,7 +37,21 @@ def success():
             average_height=round(average_height, 1)
             qresult=db.session.query(Data).filter(Data.email_==email).count()
             return render_template("success.html", qresult=qresult, average_height=average_height)
-        return render_template("index.html", message="Email already exists")  #otherwise give message to user  
+        return render_template("index.html", message="Email already exists")  #otherwise give message to user
+
+@app.route("/upload", methods=['POST'])
+def upload():
+    global file
+    if request.method=='POST':
+        file=request.files["file"]
+        file.save(secure_filename("uploaded"+file.filename))
+        with open("uploaded"+file.filename,"a") as f:
+            f.write("This is a new line addded!")
+        return render_template("index.html", btn="download.html")
+
+@app.route("/download")
+def download():
+    return send_file("uploaded"+file.filename, attachment_filename="yourfile.txt", as_attachment=True)
 
 if __name__ == '__main__'   :
     app.debug=True
